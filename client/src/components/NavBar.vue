@@ -1,12 +1,13 @@
 <script setup lang="ts">
     import { ref } from 'vue';
     import { RouterLink } from 'vue-router';
+    import LoginBadge from './LoginBadge.vue';
     let isActive = ref(false);
 
 </script>
 
 <template>
-    <nav class="navbar is-info" role="navigation" aria-label="main navigation">
+    <nav class="navbar is-info navbar-custom-style" role="navigation" aria-label="main navigation">
 
         <div class="container">
         <div class="navbar-brand">
@@ -56,4 +57,5 @@
         
         border-bottom: #00AA00 5px solid;
     }
+
 </style>
