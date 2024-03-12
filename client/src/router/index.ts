@@ -19,6 +19,11 @@ const router = createRouter({
       name: 'Admin',
       component: () => import('../views/AdminView.vue')
     },
+    {
+      path: '/friend-activity',
+      name: 'Friend Activity',
+      component: () => import('../views/FriendActivityView.vue')
+    }
   ]
 })
 
