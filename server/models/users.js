@@ -35,7 +35,6 @@ async function getUser(userName) {
   return user;
 }
 
-
 async function createUser(data) {
   const existingUserName = await User.findOne({ userName: data.userName });
   const existingEmail = await User.findOne({ email: data.email });
