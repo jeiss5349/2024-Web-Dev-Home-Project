@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const UserActivity = mongoose.model('userActivity', new Schema({
-    userId: Number,
+    userId: String,
     title: String,
     date: Date,
     picture: String
@@ -21,7 +21,9 @@ async function addActivity(data) {
     }
 }
 
-async function getUserActivity() { }
+async function getUserActivity(userId) {
+    return await UserActivity.find({ userId });
+}
 
 async function getUserFriendsActivities() { }
 
