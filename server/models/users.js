@@ -1,10 +1,44 @@
-const { connect } = require("./mongo");
-const COLLECTION_NAME = "users";
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const jwt = require('jsonwebtoken');
+
+const User = mongoose.model('users', new Schema({
+  userName: String,
+  password: String,
+  email: String,
+  isAdmin: Boolean,
+  profilePicture: String,
+  friends: [Number],
+  friendRequests: [Number]
+}));
+
+
+async function getUsers(){
+  return User.find({});
+}
+
+async function getUser(userName) {
+  let user;
+  if (userName.includes("@")) {
+    user = await User.findOne({ email: userName.toLowerCase() });
+  } else {
+    user = await User.findOne({ userName :userName.toLowerCase() });
+  }
+
+  if (!user) {
+    let message = {
+      text: "User does not exist",
+      type: "danger",
+    }
+    return message;
+  }
+  return user;
+}
+
+
 async function createUser(data) {
-  console.log(data);
-  const users = await collection();
-  const existingUserName = await users.findOne({ userName: data.userName });
-  const existingEmail = await users.findOne({ email: data.email });
+  const existingUserName = await User.findOne({ userName: data.userName });
+  const existingEmail = await User.findOne({ email: data.email });
   let message = {
     text: "",
     type: "",
@@ -28,17 +62,42 @@ async function createUser(data) {
     friends: [],
     friendRequests: [],
   };
-  await users.insertOne(user);
+  await User.create(user);
   message.text = "Account successfully created!";
   message.type = "success";
   return message;
 }
 
-async function collection() {
-  const client = await connect();
-  return client.db("sports_life").collection(COLLECTION_NAME);
+async function authenticate(data) {
+  const { userName, password, email } = data;
+  const user = await getUser(userName);
+  if (user) {
+    if (user.password === password && (user.userName === userName.toLowerCase() || user.email === userName.toLowerCase())) {
+      return {
+        userName: user.userName,
+        email: user.email,
+        isAdmin: user.isAdmin,
+        token: await jwt.sign(
+          {
+            _id: user._id
+          },
+          '1234!@#$',
+          {
+            expiresIn: '30 days'
+          }
+        )
+      };
+    }
+  }
+  let message = {
+    text: "Invalid username or password",
+    type: "danger",
+  }
+  return message;
 }
 
 module.exports = {
   createUser,
+  getUsers,
+  authenticate
 };
