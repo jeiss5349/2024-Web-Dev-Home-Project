@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
+const { getUserById } = require('./users');
 const Schema = mongoose.Schema;
+const user = require('./users');
 
 const UserActivity = mongoose.model('userActivity', new Schema({
     userId: String,
@@ -25,7 +27,22 @@ async function getUserActivity(userId) {
     return await UserActivity.find({ userId });
 }
 
-async function getUserFriendsActivities() { }
+async function getUserFriendsActivities(userId) {
+    const user = await getUserById(userId);
+    let users = [];
+    const userFriends = user.friends;
+    if (userFriends.length) {
+        for(let userFriend of userFriends){
+            const user = await getUserById(userFriend);
+            const userActivity = getUserActivity(userFriend);
+            users.push({
+                user : user ,
+                userActivity : userActivity
+            });
+        }
+    }
+    return users;
+}
 
 module.exports = {
     addActivity,
