@@ -8,8 +8,25 @@ const UserActivity = mongoose.model('userActivity', new Schema({
     picture: String
 }));
 
-async function addActivity(data){}
+async function addActivity(data) {
+    await UserActivity.create({
+        title: data.title,
+        userId: data.userId,
+        date: new Date(),
+        picture: data.picture
+    });
+    return {
+        message: 'Avtivity Added.',
+        type: 'success'
+    }
+}
 
-async function getUserActivity(){}
+async function getUserActivity() { }
 
-async function getUserFriendsActivities(){}
+async function getUserFriendsActivities() { }
+
+module.exports = {
+    addActivity,
+    getUserActivity,
+    getUserFriendsActivities
+}
