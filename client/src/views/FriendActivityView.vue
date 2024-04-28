@@ -131,12 +131,13 @@
     </div>
   </main>
   <main v-else>
-    <h1 class="title">User needs to Login</h1>
+    <LoginView/>
   </main>
 </template>
 
 <script setup lang="ts">
 import session, { isLoggedIn } from '../stores/session'
+import LoginView from './LoginView.vue';
 import { ref, computed } from 'vue'
 const modalActive = ref(false)
 const newActivity = ref({

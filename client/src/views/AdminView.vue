@@ -60,14 +60,14 @@
        </div> 
     </main>
     <main v-else>
-      <h1 class="title">You are not an admin</h1>
+      <LoginView/>
   
       </main>
   </template>
   
   <script setup lang="ts">
   import session, { isLoggedIn } from '../stores/session';
-  
+  import LoginView from './LoginView.vue';
   </script>
   
   <style scoped>

@@ -20,6 +20,16 @@ const router = createRouter({
       component: () => import('../views/AdminView.vue')
     },
     {
+      path: '/login',
+      name: 'Login',
+      component: () => import('../views/LoginView.vue')
+    },
+    {
+      path: '/sign-up',
+      name: 'Sign Up',
+      component: () => import('../views/SignUpView.vue')
+    },
+    {
       path: '/friend-activity',
       name: 'Friend Activity',
       component: () => import('../views/FriendActivityView.vue')
