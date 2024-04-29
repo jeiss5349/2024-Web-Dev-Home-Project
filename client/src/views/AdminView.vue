@@ -88,7 +88,7 @@
     </div>
     </main>
     <main v-else>
-      <LoginView/>
+     <p>You don`t have access to this Page Please Login with Admin Account</p>
   
       </main>
   </template>
