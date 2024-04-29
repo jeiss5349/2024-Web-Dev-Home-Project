@@ -2,6 +2,7 @@
 import { ref, watch } from "vue";
 import { RouterLink } from "vue-router";
 import router from "@/router";
+import { createUser } from "@/stores/users";
 
 let email = ref("");
 let userName = ref("");
@@ -75,6 +76,9 @@ watch(created, () => {
         <p class="control">
           <button
             class="button is-danger is-fullwidth has-text-weight-bold"
+            @click="createUser(userName,email,password).then((res) => {
+                if (res) created = true;
+              })"
           >
             <span class="is-size-5">Sign Up</span>
           </button>

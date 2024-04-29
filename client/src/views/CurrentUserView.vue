@@ -18,34 +18,19 @@
           <div class="field">
             <label class="label">Title</label>
             <div class="control">
-              <input
-                v-model="newActivity.title"
-                class="input"
-                type="text"
-                placeholder="Text input"
-              />
+              <input v-model="newActivity.title" class="input" type="text" placeholder="Text input" />
             </div>
           </div>
           <div class="field">
             <label class="label">Date</label>
             <div class="control">
-              <input
-                v-model="newActivity.date"
-                class="input"
-                type="text"
-                placeholder="Text input"
-              />
+              <input v-model="newActivity.date" class="input" type="text" placeholder="Text input" />
             </div>
           </div>
           <div class="field">
             <label class="label">Picture</label>
             <div class="control">
-              <input
-                v-model="newActivity.pictureUrl"
-                class="input"
-                type="text"
-                placeholder="Text input"
-              />
+              <input v-model="newActivity.picture" class="input" type="text" placeholder="Text input" />
             </div>
           </div>
         </section>
@@ -55,7 +40,7 @@
         </footer>
       </div>
     </div>
-    <div v-if="session.user?.firstName == 'Jeiss'">
+    <!-- <div v-if="session.user?.firstName == 'Jeiss'">
       <div class="columns">
         <div class="column is-1">
           <figure class="image">
@@ -111,10 +96,10 @@
           </figure>
         </div>
       </div>
-    </div>
+    </div> -->
     <div v-for="(activity, index) in userActivities" :key="index">
       <div class="columns">
-        <div class="column is-1">
+        <!-- <div class="column is-1">
           <figure v-if="session.user?.firstName == 'Michael'" class="image">
             <img src="../assets/Michael.jpg" />
           </figure>
@@ -124,61 +109,75 @@
           <figure v-if="session.user?.firstName == 'Jeiss'" class="image">
             <img src="../assets/Jeiss.jpg" />
           </figure>
-        </div>
+        </div> -->
         <div class="column is-4">
           <p>
-            <span class="has-text-weight-semibold">{{ session.user.firstName }}</span>
-            <span class="has-text-weight-light">{{ activity.date }}</span>
+            <span class="has-text-weight-semibold">{{ session.user?.userName }}</span>
+            <span class="has-text-weight-light">{{ formatDate(activity.date) }}</span>
           </p>
           <p>{{ activity.title }}</p>
           <figure class="image is-square">
-            <img :src="activity.pictureUrl" />
+            <img :src="activity.picture" />
           </figure>
         </div>
       </div>
     </div>
   </main>
   <main v-else>
-   <LoginView/>
+    <LoginView />
   </main>
 </template>
 
 <script setup lang="ts">
 import session, { isLoggedIn } from '../stores/session'
 import LoginView from './LoginView.vue';
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { getUserActivity, addUserActivity } from "@/stores/avtivity";
+import dayjs from 'dayjs';
+
 const modalActive = ref(false)
 const newActivity = ref({
   title: '',
   date: '',
-  pictureUrl: ''
-})
-const userActivities = ref([])
+  picture: ''
+});
 
-const userProfilePicture = computed(() => {
-  if (session?.user?.firstName === 'Jeiss') {
-    return '../assets/Jeiss.jpg'
-  } else if (session?.user?.firstName === 'Serena') {
-    return '../assets/Serena.jpg'
-  } else if (session?.user?.firstName === 'Michael') {
-    return '../assets/Michael.jpg'
-  } else {
-    return ''
+const userActivities = ref();
+
+onMounted(async () => {
+  if (session.user) {
+    try {
+      const activities = await getUserActivity(session.user._id);
+      userActivities.value = activities;
+    } catch (error) {
+      console.error('Error fetching user activities:', error);
+    }
   }
-})
+});
+
 const addActivity = () => {
-  userActivities.value.push({
+  addUserActivity({
     title: newActivity.value.title,
-    date: newActivity.value.date,
-    pictureUrl: newActivity.value.pictureUrl
-  })
+    date: new Date(newActivity.value.date) ?? new Date(),
+    picture: newActivity.value.picture,
+    userId: session.user._id
+  }).then((res) => {
+    userActivities.value.push({
+      title: newActivity.value.title,
+      date: newActivity.value.date,
+      pictureUrl: newActivity.value.picture
+    });
+  });
 
   newActivity.value.title = ''
   newActivity.value.date = ''
-  newActivity.value.pictureUrl = ''
-
-  console.log(userActivities)
+  newActivity.value.picture = ''
   modalActive.value = false
+}
+
+function formatDate(dateString: Date) {
+  const date = dayjs(dateString);
+  return date.format('dddd MMMM D, YYYY');
 }
 </script>
 

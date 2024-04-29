@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import router from "@/router";
 import { isLoggedIn } from "@/stores/session";
+import { login } from "@/stores/users";
 import { ref, watch } from "vue";
 import { RouterLink } from "vue-router";
 
@@ -8,9 +9,9 @@ import { RouterLink } from "vue-router";
 let userName = ref("");
 let password = ref("");
 
-// watch(isLoggedIn, () => {
-//   if (isLoggedIn()) router.push("/");
-// });
+watch(isLoggedIn, () => {
+  if (isLoggedIn()) router.push("/");
+});
 </script>
 
 <template>
@@ -56,7 +57,7 @@ let password = ref("");
         <p class="control">
           <button
             class="button is-danger is-fullwidth has-text-weight-bold"
-            
+            @click="login(userName,password)"
           >
             <span class="is-size-5">Login</span>
           </button>

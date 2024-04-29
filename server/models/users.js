@@ -3,6 +3,8 @@ const Schema = mongoose.Schema;
 const jwt = require('jsonwebtoken');
 
 const User = mongoose.model('users', new Schema({
+  firstName : String,
+  lastName : String,
   userName: String,
   password: String,
   email: String,
@@ -57,6 +59,8 @@ async function createUser(data) {
     return message;
   }
   const user = {
+    firstName: data.firstName,
+    lastName: data.lastName,
     userName: data.userName.toLowerCase(),
     password: data.password,
     email: data.email.toLowerCase(),
@@ -77,10 +81,13 @@ async function authenticate(data) {
   if (user) {
     if (user.password === password && (user.userName === userName.toLowerCase() || user.email === userName.toLowerCase())) {
       return {
+        _id : user._id,
         userName: user.userName,
+        password : user.password,
         email: user.email,
         isAdmin: user.isAdmin,
-        token: await jwt.sign(
+        type : 'success',
+        token: jwt.sign(
           {
             _id: user._id
           },

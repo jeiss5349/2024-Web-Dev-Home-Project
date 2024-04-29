@@ -14,7 +14,7 @@ async function addActivity(data) {
     await UserActivity.create({
         title: data.title,
         userId: data.userId,
-        date: new Date(),
+        date: data.date ?? new Date(),
         picture: data.picture
     });
     return {
