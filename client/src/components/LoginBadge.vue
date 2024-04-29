@@ -4,11 +4,11 @@
 
 <template>
      <div class="navbar-item has-dropdown is-hoverable" v-if="session.user == null">
-              <a class="navbar-link">
-                Login
-              </a>
-      
-              <div class="navbar-dropdown">
+              <button class="button is-primary">
+                <RouterLink to="/login"> Log in</RouterLink>
+              </button>
+              &nap;
+              <!-- <div class="navbar-dropdown">
                 <a class="navbar-item button is-light" @click="login('Jeiss', 'Varghese', true)">
                   Jeiss Varghese
                 </a>
@@ -18,10 +18,10 @@
                 <a class="navbar-item button is-light" @click="login('Serena', 'Williams', false)">
                   Serena Williams
                 </a>
-              </div>
+              </div> -->
   
         <a class="button is-primary">
-            <strong>Sign up</strong>
+          <RouterLink to="/sign-up">Sign Up</RouterLink>
         </a>
       </div>
     <div v-else>
