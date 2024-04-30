@@ -40,7 +40,7 @@ export function getUser(userName: string) {
 
 
 export function login(userName: string, password: string) {
-    return api<User | Message>(`users/authenticate`, {
+    return api<any>(`users/authenticate`, {
         userName,
         password,
     }).then((res) => {

@@ -12,25 +12,29 @@
         <header class="modal-card-head">
           <p class="modal-card-title">Add Activity</p>
 
-          <button class="delete" aria-label="close"></button>
+          <button class="delete" aria-label="close" @click="closeModal"></button>
         </header>
         <section class="modal-card-body">
           <div class="field">
             <label class="label">Title</label>
             <div class="control">
               <input v-model="newActivity.title" class="input" type="text" placeholder="Text input" />
+              <p v-if="titleError" class="help is-danger">{{ titleError }}</p>
+
             </div>
           </div>
           <div class="field">
             <label class="label">Date</label>
             <div class="control">
-              <input v-model="newActivity.date" class="input" type="text" placeholder="Text input" />
+              <input v-model="newActivity.date" class="input" type="date" placeholder="Date input" />
+              <p v-if="dateError" class="help is-danger">{{ dateError }}</p>
             </div>
           </div>
           <div class="field">
             <label class="label">Picture</label>
             <div class="control">
               <input v-model="newActivity.picture" class="input" type="text" placeholder="Text input" />
+              <p v-if="pictureError" class="help is-danger">{{ pictureError }}</p>
             </div>
           </div>
         </section>
@@ -142,7 +146,22 @@ const newActivity = ref({
   picture: ''
 });
 
+const titleError = ref('');
+const dateError = ref('');
+const pictureError = ref('');
+
 const userActivities = ref();
+
+const closeModal = () => {
+  modalActive.value = false;
+  resetForm();
+};
+
+const resetForm = () => {
+  newActivity.value.title = '';
+  newActivity.value.date = '';
+  newActivity.value.picture = '';
+};
 
 onMounted(async () => {
   if (session.user) {
@@ -155,25 +174,34 @@ onMounted(async () => {
   }
 });
 
-const addActivity = () => {
-  addUserActivity({
-    title: newActivity.value.title,
-    date: new Date(newActivity.value.date) ?? new Date(),
-    picture: newActivity.value.picture,
-    userId: session.user._id
-  }).then((res) => {
-    userActivities.value.push({
-      title: newActivity.value.title,
-      date: newActivity.value.date,
-      pictureUrl: newActivity.value.picture
-    });
-  });
+const addActivity = async () => {
+  let isValid = true;
+    if (!newActivity.value.title) {
+        titleError.value = 'Please enter a title';
+        isValid = false;
+    }
+    if (!newActivity.value.date) {
+        dateError.value = 'Please select a date';
+        isValid = false;
+    }
+    if (!newActivity.value.picture) {
+        pictureError.value = 'Please enter a picture URL';
+        isValid = false;
+    }
 
-  newActivity.value.title = ''
-  newActivity.value.date = ''
-  newActivity.value.picture = ''
-  modalActive.value = false
-}
+    if (!isValid) {
+        return;
+    }
+    addUserActivity({
+      title: newActivity.value.title,
+      date: new Date(newActivity.value.date) ?? new Date(),
+      picture: newActivity.value.picture,
+      userId: session.user._id
+    }).then(async (res)  => {
+      userActivities.value = await getUserActivity(session.user._id);
+    });
+    closeModal();
+};
 
 function formatDate(dateString: Date) {
   const date = dayjs(dateString);
