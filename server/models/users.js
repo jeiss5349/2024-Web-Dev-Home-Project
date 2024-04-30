@@ -106,9 +106,14 @@ async function authenticate(data) {
   return message;
 }
 
+async function deleteUser(userId){
+  return await User.deleteOne({ _id : userId });
+}
+
 module.exports = {
   createUser,
   getUsers,
   authenticate,
-  getUserById
+  getUserById,
+  deleteUser
 };

@@ -16,20 +16,30 @@
             <tr>
               <th>First Name</th>
               <th>Last Name</th>
+              <th>Email</th>
+              <th>User Name</th>
               <th>Is Admin</th>
               <th>User</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody >
             <tr v-for="(user, index) in users" :key="index">
               <td> {{ user?.firstName }}  </td>
               <td> {{ user?.lastName  }} </td>
+              <td> {{ user?.email  }} </td>
+              <td> {{ user?.userName  }} </td>
               <td> {{ user.isAdmin  }} </td>
               <td>
                 <div class="control">
                     <input type="radio" name="answer">
                   </div>
               </td>
+              <td>
+              <div class="buttons">
+                <button @click="deleteUsers(user)" class="button is-danger is-small">Delete</button>
+              </div>
+            </td>
             </tr>
           </tbody>
         </table>
@@ -108,7 +118,7 @@
   import { onMounted, ref } from 'vue';
 import session, { isLoggedIn , isAdmin } from '../stores/session';
   import LoginView from './LoginView.vue';
-import { getUsers , createUser } from '@/stores/users';
+import { getUsers , createUser ,deleteUser} from '@/stores/users';
   
   const users = ref();
   const modalActive = ref(false);
@@ -175,6 +185,15 @@ const addUsers = async () => {
     resetForm();
   });
 }
+
+  const deleteUsers = async (data: any) => {
+    deleteUser(data._id).then(async (res) => {
+      if (res) {
+        const usersData = await getUsers();
+        users.value = usersData;
+      }
+    })
+  }
 
   const resetForm = () => {
     newUser.value.firstName = '';

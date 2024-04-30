@@ -22,6 +22,12 @@ app
       .then((x) => res.status(200).send(x))
       .catch(next);
   })
+  .delete("/:userId", (req, res, next) => {
+    users
+      .deleteUser(req.params.userId)
+      .then((x) => res.status(200).send(x))
+      .catch(next);
+  })
   
 
 module.exports = app;
