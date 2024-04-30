@@ -47,12 +47,14 @@
             <label class="label">First Name</label>
             <div class="control">
               <input v-model="newUser.firstName" class="input" type="text" placeholder="Text input" />
+              <p v-if="firstNameError" class="help is-danger">{{ firstNameError }}</p>
             </div>
           </div>
           <div class="field">
             <label class="label">Last Name</label>
             <div class="control">
               <input v-model="newUser.lastName" class="input" type="text" placeholder="Text input" />
+              <p v-if="lastNameError" class="help is-danger">{{ lastNameError }}</p>
             </div>
           </div>
           <div class="field">
@@ -65,18 +67,27 @@
             <label class="label">Email</label>
             <div class="control">
               <input v-model="newUser.email" class="input" type="text" placeholder="Text input" />
+              <p v-if="emailError" class="help is-danger">{{ emailError }}</p>
             </div>
           </div>
           <div class="field">
             <label class="label">User Name</label>
             <div class="control">
               <input v-model="newUser.userName" class="input" type="text" placeholder="Text input" />
+              <p v-if="userNameError" class="help is-danger">{{ userNameError }}</p>
             </div>
           </div>
           <div class="field">
             <label class="label">Password</label>
             <div class="control">
               <input v-model="newUser.password" class="input" type="text" placeholder="Text input" />
+              <p v-if="passwordError" class="help is-danger">{{ passwordError }}</p>
+            </div>
+          </div>
+          <div class="field">
+            <label class="label">Is Admin</label>
+            <div class="control">
+              <input type="checkbox" v-model="newUser.isAdmin">
             </div>
           </div>
         </section>
@@ -107,8 +118,15 @@ import { getUsers , createUser } from '@/stores/users';
   profilePicture: '',
   userName :'',
   email : '',
-  password : ''
+  password : '',
+  isAdmin : false
 });
+
+const firstNameError = ref('');
+const lastNameError = ref('');
+const userNameError = ref('');
+const emailError = ref('');
+const passwordError = ref('');
 
   onMounted(async () => {
   if (session.user) {
@@ -122,13 +140,55 @@ import { getUsers , createUser } from '@/stores/users';
 });
 
 const addUsers = async () => {
-  createUser(newUser.value).then((res) => {
-    if(res){
-      users.value.push({...newUser.value});
+  let isValid = true;
+    if (!newUser.value.firstName) {
+        firstNameError.value = 'Please enter first name';
+        isValid = false;
     }
-    modalActive.value = false
+    if (!newUser.value.lastName) {
+        lastNameError.value = 'Please enter last name';
+        isValid = false;
+    }
+    if (!newUser.value.email) {
+        emailError.value = 'Please enter email address';
+        isValid = false;
+    }
+    if (!newUser.value.userName) {
+        userNameError.value = 'Please enter user name';
+        isValid = false;
+    }
+    if (!newUser.value.password) {
+        passwordError.value = 'Please enter password';
+        isValid = false;
+    }
+
+    if (!isValid) {
+        return;
+    }
+
+  createUser(newUser.value).then(async(res) => {
+    if(res){
+      const usersData = await getUsers();
+      users.value = usersData;
+    }
+    modalActive.value = false;
+    resetForm();
   });
 }
+
+  const resetForm = () => {
+    newUser.value.firstName = '';
+    newUser.value.lastName = '';
+    newUser.value.email = '';
+    newUser.value.password = '';
+    newUser.value.userName = '';
+    newUser.value.isAdmin = false;
+    firstNameError.value = '';
+    lastNameError.value = '';
+    userNameError.value = '';
+    emailError.value = '';
+    passwordError.value = '';
+  };
 
 
   </script>

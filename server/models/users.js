@@ -64,7 +64,7 @@ async function createUser(data) {
     userName: data.userName.toLowerCase(),
     password: data.password,
     email: data.email.toLowerCase(),
-    isAdmin: false,
+    isAdmin: data.isAdmin ? true :  false,
     profilePicture: "../assets/user-placeholder.png",
     friends: [],
     friendRequests: [],
