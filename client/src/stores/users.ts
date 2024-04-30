@@ -23,6 +23,12 @@ export async function getUsers() {
     });
 }
 
+export async function deleteUser(userId:string) {
+    return api<User[]>(`users/${userId}`,null,'delete').then((res) => {
+        return res;
+    });
+}
+
 export function createUser(data:User) {
     return api<Message>("users/create-user", { ...data }).then(
         (res) => {
