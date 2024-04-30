@@ -2,16 +2,24 @@
 import router from "@/router";
 import { isLoggedIn } from "@/stores/session";
 import { login } from "@/stores/users";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { RouterLink } from "vue-router";
 
 
 let userName = ref("");
 let password = ref("");
 
-watch(isLoggedIn, () => {
-  if (isLoggedIn()) router.push("/");
+const isFormValid = computed(() => {
+  return userName.value !== "" && password.value !== "";
 });
+
+const handleLogin = () => {
+  if (isFormValid.value) {
+    login(userName.value, password.value)
+  } else {
+    console.log("Please fill in all fields");
+  }
+};
 </script>
 
 <template>
@@ -57,7 +65,8 @@ watch(isLoggedIn, () => {
         <p class="control">
           <button
             class="button is-danger is-fullwidth has-text-weight-bold"
-            @click="login(userName,password)"
+            @click="handleLogin"
+            :disabled="!isFormValid"
           >
             <span class="is-size-5">Login</span>
           </button>

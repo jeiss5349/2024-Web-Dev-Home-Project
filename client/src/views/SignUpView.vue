@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { RouterLink } from "vue-router";
 import router from "@/router";
 import { createUser } from "@/stores/users";
@@ -8,7 +8,21 @@ let email = ref("");
 let userName = ref("");
 let password = ref("");
 
-const created = ref(false);
+let created = ref(false);
+
+const isFormValid = computed(() => {
+  return userName.value !== "" && password.value !== "" && email.value !== "";
+});
+
+const handleSignUp = () => {
+  if (isFormValid.value) {
+    createUser({userName : userName.value,password : password.value , email : email.value}).then((res)=>{
+      if (res) created.value = true;
+    });
+  } else {
+    console.log("Please fill in all fields");
+  }
+};
 
 watch(created, () => {
   if (created.value) {
@@ -32,6 +46,7 @@ watch(created, () => {
             type="text"
             placeholder="Username"
             v-model="userName"
+            required
           />
           <span class="icon is-small is-left">
             <i class="fas fa-user"></i>
@@ -49,6 +64,7 @@ watch(created, () => {
             type="email"
             placeholder="Email"
             v-model="email"
+            required
           />
           <span class="icon is-small is-left">
             <i class="fas fa-envelope"></i>
@@ -66,6 +82,7 @@ watch(created, () => {
             type="password"
             placeholder="Password"
             v-model="password"
+            required
           />
           <span class="icon is-small is-left">
             <i class="fas fa-lock"></i>
@@ -76,9 +93,8 @@ watch(created, () => {
         <p class="control">
           <button
             class="button is-danger is-fullwidth has-text-weight-bold"
-            @click="createUser(userName,email,password).then((res) => {
-                if (res) created = true;
-              })"
+            :disabled="!isFormValid"
+            @click="handleSignUp"
           >
             <span class="is-size-5">Sign Up</span>
           </button>
