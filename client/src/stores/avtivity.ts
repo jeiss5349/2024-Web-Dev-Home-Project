@@ -33,3 +33,11 @@ export function addUserActivity(activity: Acvtivity) {
         }
     );
 }
+
+export async function getFriendsActivity(userId: string) {
+    return api<any>(`activity/friendsActivty/${userId}`).then(
+        (res) => {
+            return res;
+        }
+    );
+}

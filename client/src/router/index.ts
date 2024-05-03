@@ -20,6 +20,11 @@ const router = createRouter({
       component: () => import('../views/AdminView.vue')
     },
     {
+      path: '/friend-request',
+      name: 'FriendRequest',
+      component: () => import('../views/FriendRequests.vue')
+    },
+    {
       path: '/login',
       name: 'Login',
       component: () => import('../views/LoginView.vue')

@@ -10,7 +10,7 @@ const User = mongoose.model('users', new Schema({
   email: String,
   isAdmin: Boolean,
   profilePicture: String,
-  friends: [Number],
+  friends: [String],
   friendRequests: [Number]
 }));
 
@@ -110,10 +110,37 @@ async function deleteUser(userId){
   return await User.deleteOne({ _id : userId });
 }
 
+async function searchUser(userName){
+  return await User.find({ userName: { $regex: new RegExp(userName, 'i') } }).lean();
+}
+
+async function addUserFriend(userId, friendId) {
+  const FoundUser = await User.findOne({ friends: { $in: friendId } });
+  let message = {
+    text: "",
+    type: "",
+  };
+  if (FoundUser) {
+    message.text = "User is already Your Friend";
+    message.type = "danger";
+    return message;
+  }
+  await User.findByIdAndUpdate(
+    userId,
+    { $addToSet: { friends: friendId } },
+    { new: true }
+  );
+  message.text = "User added as a friend";
+  message.type = "succes";
+  return message;
+}
+
 module.exports = {
   createUser,
   getUsers,
   authenticate,
   getUserById,
-  deleteUser
+  deleteUser,
+  searchUser,
+  addUserFriend
 };

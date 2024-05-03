@@ -18,7 +18,6 @@ export interface User {
 
 export async function getUsers() {
     return api<User[]>(`users`).then((res) => {
-        console.log(res)
         return res;
     });
 }
@@ -42,6 +41,21 @@ export function createUser(data:User) {
 
 export function getUser(userName: string) {
     return api<User>(`users/${userName}`);
+}
+
+export async function searchUser(userName : string){
+    return api<User>(`users/search/${userName}`);
+}
+
+export async function addFriend(userId:string,friendId:string){
+    return api<Message>("users/add-friend", { userId , friendId }).then(
+        (res) => {
+            if (res) {
+                session.messages.push(res);
+                return true;
+            } else return true;
+        }
+    );
 }
 
 

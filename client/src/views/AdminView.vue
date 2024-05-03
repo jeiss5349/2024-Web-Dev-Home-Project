@@ -8,7 +8,7 @@
       <div class="buttons is-centered ">
         
           <button  @click="modalActive = true" class="button is-medium is-primary">Add</button>
-          <button class="button is-medium is-link">Edit</button>
+          <!-- <button class="button is-medium is-link">Edit</button> -->
         </div>
         <div class="table-container column is-6 mx-auto">
         <table class="table is-bordered is-striped is-fullwidth ">

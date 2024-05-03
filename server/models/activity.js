@@ -34,11 +34,19 @@ async function getUserFriendsActivities(userId) {
     if (userFriends.length) {
         for(let userFriend of userFriends){
             const user = await getUserById(userFriend);
-            const userActivity = getUserActivity(userFriend);
-            users.push({
-                user : user ,
-                userActivity : userActivity
-            });
+            const userActivity = await getUserActivity(userFriend);
+            for (activity of userActivity) {
+                users.push(
+                    {
+                        title: activity.title,
+                        date: activity.date,
+                        userName: user.userName,
+                        UserPicture : user.picture,
+                        actPicture : activity.picture
+                    }
+
+                )
+            }
         }
     }
     return users;
