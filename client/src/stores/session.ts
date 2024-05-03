@@ -3,8 +3,9 @@ import HttpCall from "@/services/http.service";
 import { computed, reactive } from "vue";
 import type { User } from "./users";
 
+const localStorageUser = localStorage.getItem('user');
 const session = reactive({
-    user: null as User | null,
+    user: localStorageUser ? JSON.parse( localStorageUser) : null,
     users: [] as User[],
     loading: 0,
     error: null as string | null,
@@ -65,6 +66,7 @@ export function login(userName: string) {
 
 export function logout() {
     session.user = null;
+    localStorage.setItem('user','');
 }
 
 export function isAdmin() {

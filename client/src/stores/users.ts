@@ -69,6 +69,7 @@ export function login(userName: string, password: string) {
                 res.password === password &&
                 (res.userName === userName || res.email === userName)
             ) {
+                localStorage.setItem('user',JSON.stringify(res));
                 session.user = res;
                 router.push('/');
             } else {
