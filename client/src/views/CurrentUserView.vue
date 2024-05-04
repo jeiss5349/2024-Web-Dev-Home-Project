@@ -4,6 +4,7 @@
 
     <div class="buttons">
       <button @click="modalActive = true" class="button is-medium is-primary">Add Activity</button>
+      <button @click="calendarModalActive = true" class="button is-medium is-primary">Calender View</button>
     </div>
 
     <div v-if="modalActive" class="modal is-active">
@@ -41,6 +42,24 @@
         <footer class="modal-card-foot">
           <button @click="addActivity()" class="button is-success">Save changes</button>
           <button @click="modalActive = false" class="button">Cancel</button>
+        </footer>
+      </div>
+    </div>
+    <div v-if="calendarModalActive" class="modal is-active">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">User Activity</p>
+
+          <button class="delete" aria-label="close" @click="calendarModalActive = false"></button>
+        </header>
+        <section class="modal-card-body">
+         <CalendarView
+         :events="userActivities"
+         ></CalendarView>
+        </section>
+        <footer class="modal-card-foot">
+          <button @click="calendarModalActive = false" class="button">Cancel</button>
         </footer>
       </div>
     </div>
@@ -138,8 +157,10 @@ import LoginView from './LoginView.vue';
 import { ref, computed, onMounted } from 'vue'
 import { getUserActivity, addUserActivity } from "@/stores/avtivity";
 import dayjs from 'dayjs';
+import CalendarView from './CalendarView.vue';
 
 const modalActive = ref(false)
+const calendarModalActive = ref(false)
 const newActivity = ref({
   title: '',
   date: '',

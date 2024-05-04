@@ -2,6 +2,7 @@
   <main v-if="isLoggedIn()">
     <h1 class="title">Friend's Activity</h1>
     <div class="buttons">
+     <button @click="calendarModalActive = true" class="button is-medium is-primary">Calendar View</button>
     </div>
     <div v-if="modalActive" class="modal is-active">
       <div class="modal-background"></div>
@@ -52,6 +53,24 @@
         </footer>
       </div>
     </div>
+    <div v-if="calendarModalActive" class="modal is-active">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Friends Activity</p>
+
+          <button class="delete" aria-label="close" @click="calendarModalActive= false"></button>
+        </header>
+        <section class="modal-card-body">
+         <CalendarView
+         :events="friendsActivites"
+         ></CalendarView>
+        </section>
+        <footer class="modal-card-foot">
+          <button @click="calendarModalActive = false" class="button">Cancel</button>
+        </footer>
+      </div>
+    </div>
     <div v-for="(activity, index) in friendsActivites" :key="index">
       <div class="columns">
         <div class="column is-1">
@@ -62,7 +81,7 @@
         <div class="column is-4">
           <p>
             <span class="has-text-weight-semibold">{{ session.user.firstName }}</span>
-            <span class="has-text-weight-light">{{ activity.date }}</span>
+            <span class="has-text-weight-light">{{ formatDate(activity.date) }}</span>
           </p>
           <p>{{ activity.title }}</p>
           <figure class="image is-square">
@@ -83,13 +102,15 @@ import session, { isLoggedIn } from '../stores/session'
 import LoginView from './LoginView.vue';
 import { ref, computed, onMounted } from 'vue'
 import dayjs from 'dayjs';
+import CalendarView from './CalendarView.vue';
 const modalActive = ref(false)
 const newActivity = ref({
   title: '',
   date: '',
   pictureUrl: ''
 })
-const friendsActivites = ref([])
+const friendsActivites = ref([]);
+const calendarModalActive = ref(false)
 
 onMounted(async () => {
   if (session.user) {
