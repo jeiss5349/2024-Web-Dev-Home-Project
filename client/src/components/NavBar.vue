@@ -29,6 +29,9 @@
             <router-link class="navbar-item" to="/admin">
               Admin
             </router-link>
+            <router-link class="navbar-item" to="/friend-request">
+              Friend Requests
+            </router-link>
 
             <router-link class="navbar-item" to="/current-user">
               Current User

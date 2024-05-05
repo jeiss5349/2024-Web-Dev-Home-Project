@@ -7,7 +7,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomeView
+      component: () => import('../views/HomeView.vue')
     },
     {
       path: '/current-user',
@@ -18,6 +18,21 @@ const router = createRouter({
       path: '/admin',
       name: 'Admin',
       component: () => import('../views/AdminView.vue')
+    },
+    {
+      path: '/friend-request',
+      name: 'FriendRequest',
+      component: () => import('../views/FriendRequests.vue')
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: () => import('../views/LoginView.vue')
+    },
+    {
+      path: '/sign-up',
+      name: 'Sign Up',
+      component: () => import('../views/SignUpView.vue')
     },
     {
       path: '/friend-activity',
