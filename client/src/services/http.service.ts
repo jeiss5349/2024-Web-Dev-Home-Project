@@ -1,4 +1,4 @@
-export const API_ROOT = 'http://localhost:3000/api/';
+export const API_ROOT = 'https://two024-web-dev-home-project-backend.onrender.com/api/';
 
 export default function HttpCall<T>(
   url: string,
