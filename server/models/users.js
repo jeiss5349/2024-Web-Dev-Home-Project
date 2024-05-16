@@ -111,7 +111,7 @@ async function deleteUser(userId){
 }
 
 async function searchUser(userName){
-  return await User.find({ userName: { $regex: new RegExp(userName, 'i') } }).lean();
+  return await User.find({ userName: { $regex: new RegExp(userName, 'i') } }).limit(10).lean();
 }
 
 async function addUserFriend(userId, friendId) {
