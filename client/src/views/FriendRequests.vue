@@ -7,9 +7,13 @@ import { json } from "stream/consumers";
 import { ref, watch } from "vue";
 import session, { isLoggedIn } from "../stores/session";
 import LoginView from "./LoginView.vue";
+import SimpleTypeahead from 'vue3-simple-typeahead';
+import 'vue3-simple-typeahead/dist/vue3-simple-typeahead.css';
+
 
 const userSearch = ref("");
 const results = ref();
+const userResult = ref();
 const isOpen = ref(false);
 const autoCompleted = ref(false);
 
@@ -37,6 +41,17 @@ const Search = async () => {
     }
 }
 
+const OnInputChange = async (value:any) => {
+   userSearch.value = value.input;
+   Search();
+}
+
+const OnSelectUser = async (item: any) => {
+    const user = results.value.find((d:any) => d.userName == item);
+    userResult.value = [user];
+}
+
+
 </script>
 
 <template>
@@ -47,12 +62,15 @@ const Search = async () => {
                 <div class="column">
                     <h3 class="title is-3">Friends</h3>
                     <div class="field has-addons">
-                        <div class="control">
-                            <input class="input" type="text" v-model="userSearch" placeholder="Lookup username" />
-                        </div>
-                        <div class="control">
-                            <a @click="Search()" class="button is-info">Search</a>
-                        </div>
+                    <vue3-simple-typeahead
+	                    id="typeahead_id"
+	                    placeholder="Start writing..."
+	                    :items="results?.length ? results.map((d:any)=>d.userName) : []"
+	                    :minInputLength="1"
+                        @onInput="OnInputChange($event)"
+                        @selectItem="OnSelectUser"
+                        >
+                    </vue3-simple-typeahead>
                     </div>
                 </div>
             </div>
@@ -67,7 +85,7 @@ const Search = async () => {
             </tr>
           </thead>
           <tbody >
-            <tr v-for="(user, index) in results" :key="index">
+            <tr v-for="(user, index) in userResult" :key="index">
               <td> {{ user?.email }}  </td>
               <td> {{ user?.userName  }} </td>
               <td>
